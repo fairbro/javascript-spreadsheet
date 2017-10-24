@@ -94,11 +94,15 @@
 
   function getColumnNumber(str) {
     //After reverse each item in array will have an index representing its value
-    var arr = str.split("").reverse();
-    //Fix 26 and 64
+    const arr = str.split("").reverse();
+
+    const A_CharCode = "A".charCodeAt();
+    const Z_CharCode = "Z".charCodeAt();
+    const range = Z_CharCode - (A_CharCode - 1);
+
     return arr
       .map((x, i) => {
-        return (x.charCodeAt() - 64) * Math.pow(26, i);
+        return (x.charCodeAt() - (A_CharCode - 1)) * Math.pow(range, i);
       })
       .reduce((accumulator, currentValue) => {
         return accumulator + currentValue;
