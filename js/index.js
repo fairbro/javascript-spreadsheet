@@ -70,9 +70,9 @@
     const value = cell.innerHTML;
 
     const col = cell.getAttribute("data-column");
-    const row = cell.parentElement.getAttribute("data-row");
+    const row = cell.getAttribute("data-row");
     //TODO: refactor to avoid duplication
-    let cellName = cellLocation.columnHeaderFromPosition(Number(col)) + row;
+    let cellName = col + row;
 
     data.storeValue(cellName, value);
     cell.innerHTML = evaluateExpression(value);
@@ -87,8 +87,7 @@
   function refreshCell(cellName) {
     let value = getValueByCellName(cellName);
 
-    let colHeader = cellName.match(/[A-Z]/)[0];
-    let col = cellLocation.columnPositionFromHeader(colHeader);
+    let col = cellName.match(/[A-Z]/)[0];
     let row = cellName.match(/\d+/)[0];
 
     let cell = document.querySelectorAll(
@@ -111,9 +110,10 @@
         if (j === 0) {
           cell.innerHTML = i;
         } else {
-          let cellName = cellLocation.columnHeaderFromPosition(Number(j)) + i;
+          let col = cellLocation.columnHeaderFromPosition(Number(j));
+          let cellName = col + i;
           cell.innerHTML = evaluateExpression(data.getValue(cellName));
-          cell.setAttribute("data-column", j);
+          cell.setAttribute("data-column", col);
           cell.setAttribute("data-row", i);
           cell.setAttribute("contenteditable", "true");
           cell.addEventListener("blur", e => {
@@ -127,21 +127,6 @@
   let cellLocation = {
     A_CharCode: "A".charCodeAt(),
     Z_CharCode: "Z".charCodeAt(),
-
-    columnPositionFromHeader: function(str) {
-      //After reverse each item in array will have an index representing its value
-      const arr = str.split("").reverse();
-
-      let range = this.Z_CharCode - this.A_CharCode + 1;
-
-      return arr
-        .map((x, i) => {
-          return (x.charCodeAt() - (this.A_CharCode - 1)) * Math.pow(range, i);
-        })
-        .reduce((accumulator, currentValue) => {
-          return accumulator + currentValue;
-        });
-    },
 
     columnHeaderFromPosition: function(nNum) {
       let result;
