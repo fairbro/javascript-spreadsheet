@@ -1,5 +1,5 @@
 "use strict";
-
+//MOVE data
 const data = {};
 
 (function() {
@@ -77,6 +77,7 @@ const data = {};
   }
 
   function getColumnNumber(str) {
+    //After reverse each item in array will have an index representing its value
     var arr = str.split("").reverse();
     //Fix 26 and 64
     return arr
