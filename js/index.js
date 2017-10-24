@@ -71,7 +71,7 @@
 
     const col = cell.getAttribute("data-column");
     const row = cell.parentElement.getAttribute("data-row");
-
+    //TODO: refactor to avoid duplication
     let cellName = cellLocation.columnHeaderFromPosition(Number(col)) + row;
 
     data.storeValue(cellName, value);
@@ -83,7 +83,7 @@
   }
 
   function refreshCell(cellName) {
-    let value = data.getValue(cellName);
+    let value = getValueByCellName(cellName);
   }
 
   function refreshTable() {
