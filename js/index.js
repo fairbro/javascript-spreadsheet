@@ -32,14 +32,9 @@
   };
 
   function getValueByCellName(cellName) {
-    // var colName = cellName.match(/[A-Z]+/)[0];
-
-    // var col = cellLocation.columnPositionFromHeader(colName);
-
-    // var row = cellName.match(/\d+/)[0];
-
     return evaluateExpression(data.getValue(cellName));
   }
+
   //TODO: Make it work for decimals
   function evaluateExpression(exp) {
     if (exp[0] !== "=") {
