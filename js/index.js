@@ -56,6 +56,15 @@
     refreshTable();
   }
 
+  function cellUpdated(cell) {
+    const value = cell.innerHTML;
+
+    const col = cell.getAttribute("data-column");
+    const row = cell.parentElement.getAttribute("data-row");
+    storeValue(col, row, value);
+    cell.innerHTML = evaluateExpression(value);
+  }
+
   function refreshTable() {
     const tableHeaderRow = document.getElementById("tableHeaderRow");
 
@@ -76,13 +85,7 @@
           cell.setAttribute("contenteditable", "true");
           //Might need to fix this for efficiency
           cell.addEventListener("blur", e => {
-            const inputCell = e.target;
-            const value = inputCell.innerHTML;
-
-            const col = inputCell.getAttribute("data-column");
-            const row = inputCell.parentElement.getAttribute("data-row");
-            storeValue(col, row, value);
-            cell.innerHTML = evaluateExpression(value);
+            cellUpdated(e.target);
           });
         }
       }
