@@ -13,14 +13,14 @@
   function retrieveValue(col, row) {
     const value = data[col + "_" + row];
 
-    //Need to evvaluate the value here incase it is build up from other cells.
+    //Need to evaluate the value here incase it is build up from other cells.
     return value === undefined ? "" : evaluateExpression(value);
   }
 
   function retrieveValueByCellName(cellName) {
     var colName = cellName.match(/[A-Z]+/)[0];
 
-    var col = getColumnNumber(colName);
+    var col = cellLocation.columnPositionFromHeader(colName);
 
     var row = cellName.match(/\d+/)[0];
 
@@ -50,7 +50,7 @@
     //Table headings
     for (let i = 1; i <= TABLE_COLUMN_LENGTH; i++) {
       const cell = tableHeaderRow.insertCell(i);
-      cell.innerHTML = numberToLetters(i);
+      cell.innerHTML = cellLocation.columnHeaderFromPosition(i);
     }
     //Table body
     refreshTable();
@@ -92,44 +92,46 @@
     }
   }
 
-  function getColumnNumber(str) {
-    //After reverse each item in array will have an index representing its value
-    const arr = str.split("").reverse();
+  var cellLocation = {
+    columnPositionFromHeader: function(str) {
+      //After reverse each item in array will have an index representing its value
+      const arr = str.split("").reverse();
 
-    const A_CharCode = "A".charCodeAt();
-    const Z_CharCode = "Z".charCodeAt();
-    const range = Z_CharCode - (A_CharCode - 1);
+      const A_CharCode = "A".charCodeAt();
+      const Z_CharCode = "Z".charCodeAt();
+      const range = Z_CharCode - A_CharCode;
 
-    return arr
-      .map((x, i) => {
-        return (x.charCodeAt() - (A_CharCode - 1)) * Math.pow(range, i);
-      })
-      .reduce((accumulator, currentValue) => {
-        return accumulator + currentValue;
-      });
-  }
+      return arr
+        .map((x, i) => {
+          return (x.charCodeAt() - (A_CharCode - 1)) * Math.pow(range - 1, i);
+        })
+        .reduce((accumulator, currentValue) => {
+          return accumulator + currentValue;
+        });
+    },
 
-  function numberToLetters(nNum) {
-    var result;
-    if (nNum <= 26) {
-      result = letter(nNum);
-    } else {
-      var modulo = nNum % 26;
-      var quotient = Math.floor(nNum / 26);
-      if (modulo === 0) {
-        result = letter(quotient - 1) + letter(26);
+    columnHeaderFromPosition: function(nNum) {
+      var result;
+      if (nNum <= 26) {
+        result = this.letter(nNum);
       } else {
-        result = letter(quotient) + letter(modulo);
+        var modulo = nNum % 26;
+        var quotient = Math.floor(nNum / 26);
+        if (modulo === 0) {
+          result = this.letter(quotient - 1) + this.letter(26);
+        } else {
+          result = this.letter(quotient) + this.letter(modulo);
+        }
       }
+
+      return result;
+    },
+
+    letter: function(nNum) {
+      var a = "A".charCodeAt(0);
+      return String.fromCharCode(a + nNum - 1);
     }
-
-    return result;
-  }
-
-  function letter(nNum) {
-    var a = "A".charCodeAt(0);
-    return String.fromCharCode(a + nNum - 1);
-  }
+  };
 
   drawTable();
 })();
