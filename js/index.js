@@ -100,12 +100,11 @@
       //After reverse each item in array will have an index representing its value
       const arr = str.split("").reverse();
 
+      var range = this.Z_CharCode - this.A_CharCode + 1;
+
       return arr
         .map((x, i) => {
-          return (
-            (x.charCodeAt() - (this.A_CharCode - 1)) *
-            Math.pow(this.Z_CharCode - this.A_CharCode + 1, i)
-          );
+          return (x.charCodeAt() - (this.A_CharCode - 1)) * Math.pow(range, i);
         })
         .reduce((accumulator, currentValue) => {
           return accumulator + currentValue;
@@ -114,13 +113,13 @@
 
     columnHeaderFromPosition: function(nNum) {
       var result;
-      if (nNum <= 26) {
+      var range = this.Z_CharCode - this.A_CharCode + 1;
+
+      if (nNum <= range) {
         result = this.letter(nNum);
       } else {
-        var modulo = nNum % (this.Z_CharCode - this.A_CharCode + 1);
-        var quotient = Math.floor(
-          nNum / (this.Z_CharCode - this.A_CharCode + 1)
-        );
+        var modulo = nNum % range;
+        var quotient = Math.floor(nNum / range);
         if (modulo === 0) {
           result = this.letter(quotient - 1) + this.letter(26);
         } else {
