@@ -18,10 +18,10 @@
       let dependents = [];
 
       for (let property in data) {
-        var isCellData = /[A-Z]+\d+/g.test(property);
+        let isCellData = /[A-Z]+\d+/g.test(property);
 
         if (isCellData) {
-          var isDependent = data[property].indexOf(cellName) > -1;
+          let isDependent = data[property].indexOf(cellName) > -1;
 
           if (isDependent) {
             dependents.push(property);
@@ -79,11 +79,22 @@
 
     let dependentCells = data.dependentCells(cellName);
 
-    //refresh cells
+    dependentCells.forEach(cellName => {
+      refreshCell(cellName);
+    });
   }
 
   function refreshCell(cellName) {
     let value = getValueByCellName(cellName);
+
+    var colHeader = cellName.match(/[A-Z]/)[0];
+    var col = cellLocation.columnPositionFromHeader(colHeader);
+    var row = cellName.match(/\d+/)[0];
+
+    var cell = document.querySelectorAll(
+      '[data-column="' + col + '"][data-row="' + row + '"]'
+    );
+    cell[0].innerText = value;
   }
 
   function refreshTable() {
@@ -103,6 +114,7 @@
           let cellName = cellLocation.columnHeaderFromPosition(Number(j)) + i;
           cell.innerHTML = evaluateExpression(data.getValue(cellName));
           cell.setAttribute("data-column", j);
+          cell.setAttribute("data-row", i);
           cell.setAttribute("contenteditable", "true");
           cell.addEventListener("blur", e => {
             cellUpdated(e.target);
