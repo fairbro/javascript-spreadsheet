@@ -1,10 +1,10 @@
 "use strict";
-//MOVE data
-const data = {};
 
 (function() {
   const TABLE_ROW_LENGTH = 100;
   const TABLE_COLUMN_LENGTH = 100;
+
+  const data = {};
 
   function storeValue(col, row, value) {
     data[col + "_" + row] = value;
