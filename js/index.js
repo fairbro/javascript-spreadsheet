@@ -23,7 +23,19 @@ const data = {};
 
     exp = exp.substring(1, exp.length);
 
+    exp = exp.replace(/[A-Z]+\d+/g, retrieveValueByCellName);
+
     return new Function("return " + exp)();
+  }
+
+  function retrieveValueByCellName(cellName) {
+    var colName = cellName.match(/[A-Z]+/)[0];
+
+    var col = getColumnNumber(colName);
+
+    var row = cellName.match(/\d+/)[0];
+
+    return retrieveValue(col, row);
   }
 
   const tableBody = document.getElementById("tableBody");
