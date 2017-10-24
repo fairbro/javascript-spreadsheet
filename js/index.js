@@ -1,14 +1,27 @@
 "use strict";
 
+const data = {
+  storeValue: (col, row, value, dependentCells) => {
+    data[col + "_" + row] = {
+      value: value,
+      dependentCells: dependentCells
+    };
+  },
+  getValue: (col, row) => {
+    const cellData = data[col + "_" + row];
+
+    return cellData === undefined ? "" : cellData.value;
+  },
+  getDependentCells: (col, row) => {
+    const cellData = data[col + "_" + row];
+
+    return cellData === undefined ? "" : cellData.dependentCells;
+  }
+};
+
 (function() {
   const TABLE_ROW_LENGTH = 100;
   const TABLE_COLUMN_LENGTH = 100;
-
-  const data = {};
-
-  function storeValue(col, row, value) {
-    data[col + "_" + row] = value;
-  }
 
   function getValueByCellName(cellName) {
     var colName = cellName.match(/[A-Z]+/)[0];
@@ -17,14 +30,7 @@
 
     var row = cellName.match(/\d+/)[0];
 
-    return getValue(col, row);
-  }
-
-  function getValue(col, row) {
-    const value = data[col + "_" + row];
-
-    //Need to evaluate the value here incase it is build up from other cells.
-    return value === undefined ? "" : evaluateExpression(value);
+    return evaluateExpression(data.getValue(col, row));
   }
 
   function evaluateExpression(exp) {
@@ -61,11 +67,21 @@
 
     const col = cell.getAttribute("data-column");
     const row = cell.parentElement.getAttribute("data-row");
-    storeValue(col, row, value);
+    var dependentCells = value.match(/[A-Z]+\d+/g);
+    data.storeValue(col, row, value, dependentCells);
     cell.innerHTML = evaluateExpression(value);
+    // var dependentCells = data.getDependentCells(col, row);
+    // refreshCells(dependentCells);
   }
 
-  function refreshCell(cell) {}
+  // function refreshCells(arr) {
+  //   arr.forEach(function(element) {
+  //     var cell = document
+  //       .querySelectorAll('[data-row="' + arr.row + '"]')
+  //       .querySelectorAll('[data-column="' + arr.col + '"]');
+  //     cell.innerHTML = evaluateExpression(data.getValue(arr.col, arr.col));
+  //   });
+  // }
 
   function refreshTable() {
     const tableHeaderRow = document.getElementById("tableHeaderRow");
@@ -81,11 +97,9 @@
         if (j === 0) {
           cell.innerHTML = i;
         } else {
-          cell.innerHTML = getValue(j, i);
+          cell.innerHTML = evaluateExpression(data.getValue(j, i));
           cell.setAttribute("data-column", j);
-          //All other row editable
           cell.setAttribute("contenteditable", "true");
-          //Might need to fix this for efficiency
           cell.addEventListener("blur", e => {
             cellUpdated(e.target);
           });
