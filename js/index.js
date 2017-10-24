@@ -10,21 +10,21 @@
     data[col + "_" + row] = value;
   }
 
-  function retrieveValue(col, row) {
-    const value = data[col + "_" + row];
-
-    //Need to evaluate the value here incase it is build up from other cells.
-    return value === undefined ? "" : evaluateExpression(value);
-  }
-
-  function retrieveValueByCellName(cellName) {
+  function getValueByCellName(cellName) {
     var colName = cellName.match(/[A-Z]+/)[0];
 
     var col = cellLocation.columnPositionFromHeader(colName);
 
     var row = cellName.match(/\d+/)[0];
 
-    return retrieveValue(col, row);
+    return getValue(col, row);
+  }
+
+  function getValue(col, row) {
+    const value = data[col + "_" + row];
+
+    //Need to evaluate the value here incase it is build up from other cells.
+    return value === undefined ? "" : evaluateExpression(value);
   }
 
   function evaluateExpression(exp) {
@@ -34,7 +34,7 @@
 
     exp = exp.substring(1, exp.length);
 
-    exp = exp.replace(/[A-Z]+\d+/g, retrieveValueByCellName);
+    exp = exp.replace(/[A-Z]+\d+/g, getValueByCellName);
 
     return new Function("return " + exp)();
   }
@@ -65,6 +65,8 @@
     cell.innerHTML = evaluateExpression(value);
   }
 
+  function refreshCell(cell) {}
+
   function refreshTable() {
     const tableHeaderRow = document.getElementById("tableHeaderRow");
 
@@ -79,7 +81,7 @@
         if (j === 0) {
           cell.innerHTML = i;
         } else {
-          cell.innerHTML = evaluateExpression(retrieveValue(j, i));
+          cell.innerHTML = getValue(j, i);
           cell.setAttribute("data-column", j);
           //All other row editable
           cell.setAttribute("contenteditable", "true");
@@ -121,7 +123,7 @@
         var modulo = nNum % range;
         var quotient = Math.floor(nNum / range);
         if (modulo === 0) {
-          result = this.letter(quotient - 1) + this.letter(26);
+          result = this.letter(quotient - 1) + this.letter(range);
         } else {
           result = this.letter(quotient) + this.letter(modulo);
         }
