@@ -32,6 +32,11 @@
     }
   };
 
+  document.getElementById("refreshBtn").addEventListener("click", e => {
+    tableBody.innerHTML = "";
+    refreshTable();
+  });
+
   function getValueByCellName(cellName) {
     return evaluateExpression(data.getValue(cellName));
   }
@@ -50,11 +55,6 @@
   }
 
   const tableBody = document.getElementById("tableBody");
-
-  document.getElementById("refreshBtn").addEventListener("click", e => {
-    tableBody.innerHTML = "";
-    refreshTable();
-  });
 
   function drawTable() {
     //Table headings
@@ -87,11 +87,11 @@
   function refreshCell(cellName) {
     let value = getValueByCellName(cellName);
 
-    var colHeader = cellName.match(/[A-Z]/)[0];
-    var col = cellLocation.columnPositionFromHeader(colHeader);
-    var row = cellName.match(/\d+/)[0];
+    let colHeader = cellName.match(/[A-Z]/)[0];
+    let col = cellLocation.columnPositionFromHeader(colHeader);
+    let row = cellName.match(/\d+/)[0];
 
-    var cell = document.querySelectorAll(
+    let cell = document.querySelectorAll(
       '[data-column="' + col + '"][data-row="' + row + '"]'
     );
     cell[0].innerText = value;
@@ -124,7 +124,7 @@
     }
   }
 
-  var cellLocation = {
+  let cellLocation = {
     A_CharCode: "A".charCodeAt(),
     Z_CharCode: "Z".charCodeAt(),
 
@@ -132,7 +132,7 @@
       //After reverse each item in array will have an index representing its value
       const arr = str.split("").reverse();
 
-      var range = this.Z_CharCode - this.A_CharCode + 1;
+      let range = this.Z_CharCode - this.A_CharCode + 1;
 
       return arr
         .map((x, i) => {
@@ -144,14 +144,14 @@
     },
 
     columnHeaderFromPosition: function(nNum) {
-      var result;
-      var range = this.Z_CharCode - this.A_CharCode + 1;
+      let result;
+      let range = this.Z_CharCode - this.A_CharCode + 1;
 
       if (nNum <= range) {
         result = this.letter(nNum);
       } else {
-        var modulo = nNum % range;
-        var quotient = Math.floor(nNum / range);
+        let modulo = nNum % range;
+        let quotient = Math.floor(nNum / range);
         if (modulo === 0) {
           result = this.letter(quotient - 1) + this.letter(range);
         } else {
