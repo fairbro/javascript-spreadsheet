@@ -5,41 +5,40 @@
   const TABLE_COLUMN_LENGTH = 100;
 
   const data = {
-    storeValue: (col, row, value) => {
-      data[col + "_" + row] = value;
+    storeValue: (cellName, value) => {
+      data[cellName] = value;
     },
-    getValue: (col, row) => {
-      const value = data[col + "_" + row];
+    getValue: cellName => {
+      const value = data[cellName];
 
       return value === undefined ? "" : value;
     },
     dependentCells: cellName => {
-      let arr = [];
+      let dependents = [];
 
       for (let property in data) {
-        //TODO: modify so it doesn't find itself
-        var isCellData = /\d+_\d+/g.test(property);
+        var isCellData = /[A-Z]+\d+/g.test(property);
 
         if (isCellData) {
-          let dependents = data[property].match(/[A-Z]+\d+/g);
+          var isDependent = data[property].indexOf(cellName) > -1;
 
-          if (dependents !== null && dependents.indexOf(cellName > -1)) {
-            arr.push(property);
+          if (isDependent) {
+            dependents.push(property);
           }
         }
       }
-      return arr;
+      return dependents;
     }
   };
 
   function getValueByCellName(cellName) {
-    var colName = cellName.match(/[A-Z]+/)[0];
+    // var colName = cellName.match(/[A-Z]+/)[0];
 
-    var col = cellLocation.columnPositionFromHeader(colName);
+    // var col = cellLocation.columnPositionFromHeader(colName);
 
-    var row = cellName.match(/\d+/)[0];
+    // var row = cellName.match(/\d+/)[0];
 
-    return evaluateExpression(data.getValue(col, row));
+    return evaluateExpression(data.getValue(cellName));
   }
   //TODO: Make it work for decimals
   function evaluateExpression(exp) {
@@ -76,10 +75,12 @@
 
     const col = cell.getAttribute("data-column");
     const row = cell.parentElement.getAttribute("data-row");
-    data.storeValue(col, row, value);
-    cell.innerHTML = evaluateExpression(value);
 
     var cellName = cellLocation.columnHeaderFromPosition(Number(col)) + row;
+
+    data.storeValue(cellName, value);
+    cell.innerHTML = evaluateExpression(value);
+
     var dependentCells = data.dependentCells(cellName);
 
     //refresh cells
