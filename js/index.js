@@ -1,27 +1,27 @@
 "use strict";
 
-const data = {
-  storeValue: (col, row, value, dependentCells) => {
-    data[col + "_" + row] = {
-      value: value,
-      dependentCells: dependentCells
-    };
-  },
-  getValue: (col, row) => {
-    const cellData = data[col + "_" + row];
-
-    return cellData === undefined ? "" : cellData.value;
-  },
-  getDependentCells: (col, row) => {
-    const cellData = data[col + "_" + row];
-
-    return cellData === undefined ? "" : cellData.dependentCells;
-  }
-};
-
 (function() {
   const TABLE_ROW_LENGTH = 100;
   const TABLE_COLUMN_LENGTH = 100;
+
+  const data = {
+    storeValue: (col, row, value, dependentCells) => {
+      data[col + "_" + row] = {
+        value: value,
+        dependentCells: dependentCells
+      };
+    },
+    getValue: (col, row) => {
+      const cellData = data[col + "_" + row];
+
+      return cellData === undefined ? "" : cellData.value;
+    },
+    getDependentCells: (col, row) => {
+      const cellData = data[col + "_" + row];
+
+      return cellData === undefined ? "" : cellData.dependentCells;
+    }
+  };
 
   function getValueByCellName(cellName) {
     var colName = cellName.match(/[A-Z]+/)[0];
