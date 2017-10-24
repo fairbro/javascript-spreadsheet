@@ -71,14 +71,18 @@
     const col = cell.getAttribute("data-column");
     const row = cell.parentElement.getAttribute("data-row");
 
-    var cellName = cellLocation.columnHeaderFromPosition(Number(col)) + row;
+    let cellName = cellLocation.columnHeaderFromPosition(Number(col)) + row;
 
     data.storeValue(cellName, value);
     cell.innerHTML = evaluateExpression(value);
 
-    var dependentCells = data.dependentCells(cellName);
+    let dependentCells = data.dependentCells(cellName);
 
     //refresh cells
+  }
+
+  function refreshCell(cellName) {
+    let value = data.getValue(cellName);
   }
 
   function refreshTable() {
@@ -95,7 +99,8 @@
         if (j === 0) {
           cell.innerHTML = i;
         } else {
-          cell.innerHTML = evaluateExpression(data.getValue(j, i));
+          let cellName = cellLocation.columnHeaderFromPosition(Number(j)) + i;
+          cell.innerHTML = evaluateExpression(data.getValue(cellName));
           cell.setAttribute("data-column", j);
           cell.setAttribute("contenteditable", "true");
           cell.addEventListener("blur", e => {
