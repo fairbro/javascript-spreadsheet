@@ -4,14 +4,14 @@
   const TABLE_ROW_LENGTH = 100;
   const TABLE_COLUMN_LENGTH = 100;
 
-  let data = {};
+  const data = {};
 
   function storeValue(col, row, value) {
     data[col + "_" + row] = value;
   }
 
   function retrieveValue(col, row) {
-    var value = data[col + "_" + row];
+    const value = data[col + "_" + row];
 
     return value === undefined ? "" : value;
   }
@@ -26,7 +26,7 @@
     return new Function("return " + exp)();
   }
 
-  let tableBody = document.getElementById("tableBody");
+  const tableBody = document.getElementById("tableBody");
 
   document.getElementById("refreshBtn").addEventListener("click", e => {
     tableBody.innerHTML = "";
@@ -36,7 +36,7 @@
   function drawTable() {
     //Table headings
     for (let i = 1; i <= TABLE_COLUMN_LENGTH; i++) {
-      let cell = tableHeaderRow.insertCell(i);
+      const cell = tableHeaderRow.insertCell(i);
       cell.innerHTML = numberToLetters(i);
     }
 
@@ -44,14 +44,14 @@
   }
 
   function refreshTable() {
-    let tableHeaderRow = document.getElementById("tableHeaderRow");
+    const tableHeaderRow = document.getElementById("tableHeaderRow");
 
     for (let i = 1; i <= TABLE_ROW_LENGTH; i++) {
-      var row = tableBody.insertRow(i - 1);
+      const row = tableBody.insertRow(i - 1);
       row.setAttribute("data-row", i);
 
       for (let j = 0; j <= TABLE_COLUMN_LENGTH; j++) {
-        var cell = row.insertCell(j);
+        const cell = row.insertCell(j);
 
         //First cell in a row. Readonly displaying the row number.
         if (j === 0) {
@@ -63,10 +63,10 @@
           cell.setAttribute("contenteditable", "true");
           //Might need to fix this for efficiency
           cell.addEventListener("blur", e => {
-            var inputCell = e.target;
+            const inputCell = e.target;
 
-            var col = inputCell.getAttribute("data-column");
-            var row = inputCell.parentElement.getAttribute("data-row");
+            const col = inputCell.getAttribute("data-column");
+            const row = inputCell.parentElement.getAttribute("data-row");
             storeValue(col, row, inputCell.innerHTML);
           });
         }
