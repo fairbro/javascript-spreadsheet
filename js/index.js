@@ -1,10 +1,10 @@
 "use strict";
 
+const data = {};
+
 (function() {
   const TABLE_ROW_LENGTH = 100;
   const TABLE_COLUMN_LENGTH = 100;
-
-  const data = {};
 
   function storeValue(col, row, value) {
     data[col + "_" + row] = value;
@@ -64,10 +64,12 @@
           //Might need to fix this for efficiency
           cell.addEventListener("blur", e => {
             const inputCell = e.target;
+            const value = inputCell.innerHTML;
 
             const col = inputCell.getAttribute("data-column");
             const row = inputCell.parentElement.getAttribute("data-row");
-            storeValue(col, row, inputCell.innerHTML);
+            storeValue(col, row, value);
+            cell.innerHTML = evaluateExpression(value);
           });
         }
       }
