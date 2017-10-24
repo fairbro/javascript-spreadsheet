@@ -6,6 +6,7 @@
 
   const data = {
     storeValue: (cellName, value) => {
+      //TODO: sanitize value
       data[cellName] = value;
     },
     getValue: cellName => {
