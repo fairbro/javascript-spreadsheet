@@ -17,6 +17,7 @@
       let arr = [];
 
       for (let property in data) {
+        //TODO: modify so it doesn't find itself
         var isCellData = /\d+_\d+/g.test(property);
 
         if (isCellData) {
@@ -40,7 +41,7 @@
 
     return evaluateExpression(data.getValue(col, row));
   }
-
+  //TODO: Make it work for decimals
   function evaluateExpression(exp) {
     if (exp[0] !== "=") {
       return exp;
