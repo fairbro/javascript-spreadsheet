@@ -13,6 +13,7 @@
   function retrieveValue(col, row) {
     const value = data[col + "_" + row];
 
+    //Need to evvaluate the value here incase it is build up from other cells.
     return value === undefined ? "" : evaluateExpression(value);
   }
 
