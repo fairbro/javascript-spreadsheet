@@ -13,7 +13,17 @@
   function retrieveValue(col, row) {
     const value = data[col + "_" + row];
 
-    return value === undefined ? "" : value;
+    return value === undefined ? "" : evaluateExpression(value);
+  }
+
+  function retrieveValueByCellName(cellName) {
+    var colName = cellName.match(/[A-Z]+/)[0];
+
+    var col = getColumnNumber(colName);
+
+    var row = cellName.match(/\d+/)[0];
+
+    return retrieveValue(col, row);
   }
 
   function evaluateExpression(exp) {
@@ -26,16 +36,6 @@
     exp = exp.replace(/[A-Z]+\d+/g, retrieveValueByCellName);
 
     return new Function("return " + exp)();
-  }
-
-  function retrieveValueByCellName(cellName) {
-    var colName = cellName.match(/[A-Z]+/)[0];
-
-    var col = getColumnNumber(colName);
-
-    var row = cellName.match(/\d+/)[0];
-
-    return retrieveValue(col, row);
   }
 
   const tableBody = document.getElementById("tableBody");
@@ -51,7 +51,7 @@
       const cell = tableHeaderRow.insertCell(i);
       cell.innerHTML = numberToLetters(i);
     }
-
+    //Table body
     refreshTable();
   }
 
