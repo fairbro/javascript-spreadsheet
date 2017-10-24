@@ -1,3 +1,11 @@
+.btn {
+  margin: 5px;
+}
+
+.control-panel {
+  background-color: #d3d3d3;
+}
+
 table.spreadsheet {
   border-collapse: collapse;
   margin-top: 1em;
@@ -6,11 +14,11 @@ table.spreadsheet {
 
 table.spreadsheet thead {
   background-color: #d3d3d3;
+  font-weight: bold;
 }
 
 table.spreadsheet td {
   border: 1px solid black;
-  font-weight: bold;
   min-width: 50px;
   text-align: center;
 }
