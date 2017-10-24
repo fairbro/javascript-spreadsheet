@@ -15,13 +15,13 @@
       return value === undefined ? "" : value;
     },
     dependentCells: cellName => {
-      let dependents = [];
+      const dependents = [];
 
       for (let property in data) {
-        let isCellData = /[A-Z]+\d+/g.test(property);
+        const isCellData = /[A-Z]+\d+/g.test(property);
 
         if (isCellData) {
-          let isDependent = data[property].indexOf(cellName) > -1;
+          const isDependent = data[property].indexOf(cellName) > -1;
 
           if (isDependent) {
             dependents.push(property);
@@ -71,13 +71,13 @@
 
     const col = cell.getAttribute("data-column");
     const row = cell.getAttribute("data-row");
-    //TODO: refactor to avoid duplication
-    let cellName = col + row;
+
+    const cellName = col + row;
 
     data.storeValue(cellName, value);
     cell.innerHTML = evaluateExpression(value);
 
-    let dependentCells = data.dependentCells(cellName);
+    const dependentCells = data.dependentCells(cellName);
 
     dependentCells.forEach(cellName => {
       refreshCell(cellName);
@@ -85,12 +85,12 @@
   }
 
   function refreshCell(cellName) {
-    let value = getValueByCellName(cellName);
+    const value = getValueByCellName(cellName);
 
-    let col = cellName.match(/[A-Z]/)[0];
-    let row = cellName.match(/\d+/)[0];
+    const col = cellName.match(/[A-Z]/)[0];
+    const row = cellName.match(/\d+/)[0];
 
-    let cell = document.querySelectorAll(
+    const cell = document.querySelectorAll(
       '[data-column="' + col + '"][data-row="' + row + '"]'
     );
     cell[0].innerText = value;
@@ -101,7 +101,6 @@
 
     for (let i = 1; i <= TABLE_ROW_LENGTH; i++) {
       const row = tableBody.insertRow(i - 1);
-      row.setAttribute("data-row", i);
 
       for (let j = 0; j <= TABLE_COLUMN_LENGTH; j++) {
         const cell = row.insertCell(j);
@@ -110,8 +109,8 @@
         if (j === 0) {
           cell.innerHTML = i;
         } else {
-          let col = cellLocation.columnHeaderFromPosition(Number(j));
-          let cellName = col + i;
+          const col = cellLocation.columnHeaderFromPosition(Number(j));
+          const cellName = col + i;
           cell.innerHTML = evaluateExpression(data.getValue(cellName));
           cell.setAttribute("data-column", col);
           cell.setAttribute("data-row", i);
@@ -124,19 +123,19 @@
     }
   }
 
-  let cellLocation = {
+  const cellLocation = {
     A_CharCode: "A".charCodeAt(),
     Z_CharCode: "Z".charCodeAt(),
 
     columnHeaderFromPosition: function(nNum) {
       let result;
-      let range = this.Z_CharCode - this.A_CharCode + 1;
+      const range = this.Z_CharCode - this.A_CharCode + 1;
 
       if (nNum <= range) {
         result = this.letter(nNum);
       } else {
-        let modulo = nNum % range;
-        let quotient = Math.floor(nNum / range);
+        const modulo = nNum % range;
+        const quotient = Math.floor(nNum / range);
         if (modulo === 0) {
           result = this.letter(quotient - 1) + this.letter(range);
         } else {
