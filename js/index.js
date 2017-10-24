@@ -4,7 +4,7 @@
   const TABLE_ROW_LENGTH = 100;
   const TABLE_COLUMN_LENGTH = 100;
 
-  var data = {};
+  let data = {};
 
   function storeValue(col, row, value) {
     data[col + "_" + row] = value;
@@ -16,17 +16,16 @@
     return value === undefined ? "" : value;
   }
 
-  // function refreshValue(col, row) {
-  //   return data[col + "_" + row];
-  // }
+  function evaluateExpression(exp) {
+    if (exp[0] !== "=") {
+      return exp;
+    }
 
-  // function refreshTable() {
-  //   for (var key in data) {
-  //     if (data.hasOwnProperty(key)) {
-  //       console.log(key.split("_") + " -> " + data[key]);
-  //     }
-  //   }
-  // }
+    exp = exp.substring(1, exp.length);
+
+    return new Function("return " + exp)();
+  }
+
   let tableBody = document.getElementById("tableBody");
 
   document.getElementById("refreshBtn").addEventListener("click", e => {
@@ -58,7 +57,7 @@
         if (j === 0) {
           cell.innerHTML = i;
         } else {
-          cell.innerHTML = retrieveValue(j, i);
+          cell.innerHTML = evaluateExpression(retrieveValue(j, i));
           cell.setAttribute("data-column", j);
           //All other row editable
           cell.setAttribute("contenteditable", "true");
