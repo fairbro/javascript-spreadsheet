@@ -87,8 +87,8 @@
   function refreshCell(cellName) {
     const value = getValueByCellName(cellName);
 
-    const col = cellName.match(/[A-Z]/)[0];
-    const row = cellName.match(/\d+/)[0];
+    const col = cellLocation.getColumn(cellName);
+    const row = cellLocation.getRow(cellName);
 
     const cell = document.querySelectorAll(
       '[data-column="' + col + '"][data-row="' + row + '"]'
@@ -148,6 +148,13 @@
 
     letter: function(nNum) {
       return String.fromCharCode(this.A_CharCode + nNum - 1);
+    },
+
+    getColumn: cellName => {
+      return cellName.match(/[A-Z]/)[0];
+    },
+    getRow: cellName => {
+      return cellName.match(/\d+/)[0];
     }
   };
 
