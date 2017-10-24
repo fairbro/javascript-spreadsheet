@@ -93,17 +93,19 @@
   }
 
   var cellLocation = {
+    A_CharCode: "A".charCodeAt(),
+    Z_CharCode: "Z".charCodeAt(),
+
     columnPositionFromHeader: function(str) {
       //After reverse each item in array will have an index representing its value
       const arr = str.split("").reverse();
 
-      const A_CharCode = "A".charCodeAt();
-      const Z_CharCode = "Z".charCodeAt();
-      const range = Z_CharCode - A_CharCode;
-
       return arr
         .map((x, i) => {
-          return (x.charCodeAt() - (A_CharCode - 1)) * Math.pow(range - 1, i);
+          return (
+            (x.charCodeAt() - (this.A_CharCode - 1)) *
+            Math.pow(this.Z_CharCode - this.A_CharCode + 1, i)
+          );
         })
         .reduce((accumulator, currentValue) => {
           return accumulator + currentValue;
@@ -115,8 +117,10 @@
       if (nNum <= 26) {
         result = this.letter(nNum);
       } else {
-        var modulo = nNum % 26;
-        var quotient = Math.floor(nNum / 26);
+        var modulo = nNum % (this.Z_CharCode - this.A_CharCode + 1);
+        var quotient = Math.floor(
+          nNum / (this.Z_CharCode - this.A_CharCode + 1)
+        );
         if (modulo === 0) {
           result = this.letter(quotient - 1) + this.letter(26);
         } else {
@@ -128,8 +132,7 @@
     },
 
     letter: function(nNum) {
-      var a = "A".charCodeAt(0);
-      return String.fromCharCode(a + nNum - 1);
+      return String.fromCharCode(this.A_CharCode + nNum - 1);
     }
   };
 
