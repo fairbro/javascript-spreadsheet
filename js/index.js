@@ -5,21 +5,29 @@
   const TABLE_COLUMN_LENGTH = 100;
 
   const data = {
-    storeValue: (col, row, value, dependentCells) => {
-      data[col + "_" + row] = {
-        value: value,
-        dependentCells: dependentCells
-      };
+    storeValue: (col, row, value) => {
+      data[col + "_" + row] = value;
     },
     getValue: (col, row) => {
-      const cellData = data[col + "_" + row];
+      const value = data[col + "_" + row];
 
-      return cellData === undefined ? "" : cellData.value;
+      return value === undefined ? "" : value;
     },
-    getDependentCells: (col, row) => {
-      const cellData = data[col + "_" + row];
+    dependentCells: cellName => {
+      let arr = [];
 
-      return cellData === undefined ? "" : cellData.dependentCells;
+      for (let property in data) {
+        var isCellData = /\d+_\d+/g.test(property);
+
+        if (isCellData) {
+          let dependents = data[property].match(/[A-Z]+\d+/g);
+
+          if (dependents !== null && dependents.indexOf(cellName > -1)) {
+            arr.push(property);
+          }
+        }
+      }
+      return arr;
     }
   };
 
@@ -67,21 +75,14 @@
 
     const col = cell.getAttribute("data-column");
     const row = cell.parentElement.getAttribute("data-row");
-    var dependentCells = value.match(/[A-Z]+\d+/g);
-    data.storeValue(col, row, value, dependentCells);
+    data.storeValue(col, row, value);
     cell.innerHTML = evaluateExpression(value);
-    // var dependentCells = data.getDependentCells(col, row);
-    // refreshCells(dependentCells);
-  }
 
-  // function refreshCells(arr) {
-  //   arr.forEach(function(element) {
-  //     var cell = document
-  //       .querySelectorAll('[data-row="' + arr.row + '"]')
-  //       .querySelectorAll('[data-column="' + arr.col + '"]');
-  //     cell.innerHTML = evaluateExpression(data.getValue(arr.col, arr.col));
-  //   });
-  // }
+    var cellName = cellLocation.columnHeaderFromPosition(Number(col)) + row;
+    var dependentCells = data.dependentCells(cellName);
+
+    //refresh cells
+  }
 
   function refreshTable() {
     const tableHeaderRow = document.getElementById("tableHeaderRow");
