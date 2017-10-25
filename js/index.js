@@ -201,6 +201,10 @@
     );
   }
 
+  function setCellEditMode(cell, col, row) {
+    cell.innerText = data.getValue(col + row);
+  }
+
   function refreshTable() {
     const tableHeaderRow = document.getElementById("tableHeaderRow");
 
@@ -224,6 +228,9 @@
             let element = e.target;
             cellUpdated(element);
             setCellJustBlurred(element);
+          });
+          cell.addEventListener("focus", e => {
+            setCellEditMode(cell, col, i);
           });
         }
       }
