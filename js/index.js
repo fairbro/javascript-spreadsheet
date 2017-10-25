@@ -3,16 +3,31 @@
 (function() {
   const TABLE_ROW_LENGTH = 100;
   const TABLE_COLUMN_LENGTH = 100;
+  let cellJustBlurred = null;
 
   const data = {
     storeValue: (cellName, value) => {
       //TODO: sanitize value
-      data[cellName] = value;
+      data[cellName] = data[cellName] || {};
+      data[cellName].value = value;
     },
     getValue: cellName => {
-      const value = data[cellName];
+      const cell = data[cellName];
 
-      return value === undefined ? "" : value;
+      if (cell === undefined) {
+        return "";
+      }
+
+      return cell.value === undefined ? "" : cell.value;
+    },
+    getFormatting: cellName => {
+      const cell = data[cellName];
+
+      if (cell === undefined) {
+        return "";
+      }
+
+      return cell.formatting === undefined ? "" : cell.formatting;
     },
     dependentCells: cellName => {
       const dependents = [];
@@ -21,7 +36,7 @@
         const isCellData = /[A-Z]+\d+/g.test(property);
 
         if (isCellData) {
-          const isDependent = data[property].indexOf(cellName) > -1;
+          const isDependent = data[property].value.indexOf(cellName) > -1;
 
           if (isDependent) {
             dependents.push(property);
@@ -29,6 +44,25 @@
         }
       }
       return dependents;
+    },
+    toggleCellBold: cellName => {
+      const cell = data[cellName];
+
+      if (cell === undefined) {
+        return;
+      }
+
+      if (cell.formatting === undefined) {
+        cell.formatting = [];
+      }
+
+      var index = cell.formatting.indexOf("bold");
+
+      if (index > -1) {
+        cell.formatting.splice(index, 1);
+      } else {
+        cell.formatting.push("bold");
+      }
     }
   };
 
@@ -36,6 +70,35 @@
     tableBody.innerHTML = "";
     refreshTable();
   });
+
+  document.getElementById("boldBtn").addEventListener("click", e => {
+    if (cellJustBlurred === null) {
+      return;
+    }
+
+    const col = cellLocation.getColumn(cellJustBlurred);
+    const row = cellLocation.getRow(cellJustBlurred);
+
+    const cell = getCell(col, row)[0];
+
+    cell.style.fontWeight = cell.style.fontWeight === "" ? "bold" : "";
+    data.toggleCellBold(col + row);
+  });
+
+  function setCellJustBlurred(element) {
+    if (element === null || element === undefined) {
+      cellJustBlurred = null;
+    }
+
+    var col = element.getAttribute("data-column");
+    var row = element.getAttribute("data-row");
+
+    if (col === null || row === null) {
+      cellJustBlurred = null;
+    } else {
+      cellJustBlurred = col + row;
+    }
+  }
 
   function getValueByCellName(cellName) {
     return evaluateExpression(data.getValue(cellName));
@@ -127,10 +190,15 @@
     const col = cellLocation.getColumn(cellName);
     const row = cellLocation.getRow(cellName);
 
-    const cell = document.querySelectorAll(
+    const cell = getCell(col, row);
+
+    cell[0].innerText = value;
+  }
+
+  function getCell(col, row) {
+    return document.querySelectorAll(
       '[data-column="' + col + '"][data-row="' + row + '"]'
     );
-    cell[0].innerText = value;
   }
 
   function refreshTable() {
@@ -153,7 +221,9 @@
           cell.setAttribute("data-row", i);
           cell.setAttribute("contenteditable", "true");
           cell.addEventListener("blur", e => {
-            cellUpdated(e.target);
+            let element = e.target;
+            cellUpdated(element);
+            setCellJustBlurred(element);
           });
         }
       }
