@@ -49,9 +49,46 @@
 
     exp = exp.substring(1, exp.length);
 
+    if (/^SUM/.test(exp)) {
+      exp = expandSUM(exp);
+    }
+
     exp = exp.replace(/[A-Z]+\d+/g, getValueByCellName);
 
     return new Function("return " + exp)();
+  }
+
+  function expandSUM(exp) {
+    const range = exp.match(/[A-Z]+\d+/g);
+
+    const start = range[0];
+    const end = range[1];
+    const startCol = cellLocation.getColumn(start);
+    let startRow = cellLocation.getRow(start);
+    const endCol = cellLocation.getColumn(end);
+    let endRow = cellLocation.getRow(end);
+
+    if (startCol !== endCol) {
+      return "";
+    }
+
+    if (startRow > endRow) {
+      const temp = startRow;
+      startRow = endRow;
+      endRow = temp;
+    }
+
+    let expanded = startCol + startRow;
+
+    startRow++;
+
+    while (startRow <= endRow) {
+      expanded += "+" + startCol + startRow;
+
+      startRow++;
+    }
+
+    return expanded;
   }
 
   const tableBody = document.getElementById("tableBody");
